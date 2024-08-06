@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class player : MonoBehaviour
 {
@@ -8,8 +9,8 @@ public class player : MonoBehaviour
     public int jumbingForce;
     public GameManager gm;
 
-    
 
+    
 
 
     // Start is called before the first frame update
@@ -26,6 +27,7 @@ public class player : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Space))
         {
             rb.velocity = Vector2.up * jumbingForce;
+            gm.audioSource.PlayOneShot(gm.audio_PlayerJumb);
         }
 
         gm.UpdateHighScore();
@@ -34,9 +36,7 @@ public class player : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Building"))
         {
-            Destroy(gameObject);
-            gm.gameOverPage.SetActive(true);
-            gm.CancelInvoke("SpawningBuilding");
+            GameOver();
             
         }
     }
@@ -50,10 +50,18 @@ public class player : MonoBehaviour
     }
     private void OnBecameInvisible()
     {
-        gameObject.SetActive(false);
+        GameOver();
+    }
+
+    void GameOver()
+    {
+        Destroy(gameObject);
         gm.gameOverPage.SetActive(true);
         gm.CancelInvoke("SpawningBuilding");
+        gm.audioSource.PlayOneShot(gm.audio_GameOver);
     }
-   
+
+    
+
 
 }
